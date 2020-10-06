@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CoList</string>
+    <string name="textViewText">nothing here</string>
+    <string name="editButtonText">Edit</string>
+    <string name="saveButtonText">Save</string>
+    <string name="titleHint">title</string>
+    <string name="contentHint">content</string>
+</resources>
