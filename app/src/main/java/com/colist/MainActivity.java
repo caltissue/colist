@@ -32,21 +32,20 @@ public class MainActivity extends AppCompatActivity {
             TextView newView = new TextView(this);
             String title = n.getTitle();
             String content = n.getContent();
-            content = content.split("\n")[0];
-            String id = ((Integer)n.getID()).toString();
+            String[] contentLines = content.split("\n");
+            content = contentLines.length > 0 ? contentLines[0] : content;
 
-            final SpannableString full = new SpannableString(title + "\n" + content + "\n" + id);
+            int id = n.getID();
+            newView.setId(id);
+
+            final SpannableString full = new SpannableString(title + "\n" + content);
 
             full.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, title.length(), 0);
             full.setSpan(new RelativeSizeSpan(2f), 0, title.length(), 0);
             full.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), 0);
 
-            int len = title.length() + "\n".length() + content.length();
-            full.setSpan(new ForegroundColorSpan(Color.LTGRAY), title.length(), len, 0);
-            full.setSpan(new StyleSpan(Typeface.ITALIC), title.length(), len, 0);
-
-            full.setSpan(new ForegroundColorSpan(Color.DKGRAY), len + 1, full.length(), 0);
-            full.setSpan(new AbsoluteSizeSpan(5), len + 1, full.length(), 0);
+            full.setSpan(new ForegroundColorSpan(Color.LTGRAY), title.length(), full.length(), 0);
+            full.setSpan(new StyleSpan(Typeface.ITALIC), title.length(), full.length(), 0);
 
             newView.setText(full);
             newView.setLayoutParams(
@@ -62,8 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ActivityNote.class);
-                    Integer noteID = Integer.parseInt(((TextView) v).getText().toString().split("\n")[2]);
-                    intent.putExtra("id", noteID);
+                    intent.putExtra("id", v.getId());
                     startActivityForResult(intent, 1);
                 }
             });
