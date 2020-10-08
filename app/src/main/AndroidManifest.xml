@@ -20,6 +20,8 @@
         <activity android:name=".ActivityNote"></activity>
 
         <activity android:name=".ActivityNoteEdit"></activity>
+
+        <activity android:name=".ActivityChangelog"></activity>
     </application>
 
 </manifest>

@@ -9,9 +9,13 @@ import java.io.IOException;
 
 public class ReadWriter {
     public static void writeSave(Context context, String filename, String contents) throws IOException {
+        writeSave(context, filename, contents, false);
+    }
+
+    public static void writeSave(Context context, String filename, String contents, boolean append) throws IOException {
         File saveFile = new File(context.getFilesDir(), filename);
         saveFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(saveFile);
+        FileOutputStream fos = new FileOutputStream(saveFile, append);
         try{
             fos.write(contents.getBytes());
         }

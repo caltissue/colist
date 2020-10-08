@@ -37,6 +37,12 @@ public class ActivityNote extends AppCompatActivity {
         startActivityForResult(intent, 2);
     }
 
+    public void onChangeClicked(View v) {
+        Intent intent = new Intent(getApplicationContext(), ActivityChangelog.class);
+        intent.putExtra("noteID", noteID);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
