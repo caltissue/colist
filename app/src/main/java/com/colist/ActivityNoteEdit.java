@@ -9,37 +9,20 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-
 public class ActivityNoteEdit extends AppCompatActivity {
 
-    public void onSave(View v) throws JSONException {
-        TextView title = findViewById(R.id.titleTextEdit);
-        TextView note = findViewById(R.id.noteTextEdit);
-/*
-        try {
-            JSONObject noteObject = new JSONObject();
-            noteObject.put("title", title.getText().toString());
-            noteObject.put("content", note.getText().toString());
-            String noteString = noteObject.toString();
+    private int noteID;
 
-            Context context = getApplicationContext();
-            File f = new File(context.getFilesDir(), "notes");
-            FileWriter writer = new FileWriter(f, true);
+    public void onSave(View v) {
+        String title = ((TextView)findViewById(R.id.titleTextEdit)).getText().toString();
+        String content = ((TextView)findViewById(R.id.noteTextEdit)).getText().toString();
 
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            bufferedWriter.write(noteString);
-            bufferedWriter.close();
-        }
-        catch (Exception e) {
-            // TODO: handle
-        }
-*/
+        Context context = getApplicationContext();
+        Note noteToSave = Note.getByID(noteID, context);
+        noteToSave = noteToSave.UpdateTitle(title).UpdateContent(content);
+        noteToSave.save(context);
+
+        setResult(Activity.RESULT_OK);
         finish();
     }
 
@@ -48,11 +31,31 @@ public class ActivityNoteEdit extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
+        noteID = getIntent().getIntExtra("noteID",0);
+
+        Context context = getApplicationContext();
+        Note n = Note.getByID(noteID, context);
 
         TextView title = findViewById(R.id.titleTextEdit);
-        title.setText(getIntent().getStringExtra("title"));
+        title.setText(n.getTitle());
 
         TextView note = findViewById(R.id.noteTextEdit);
-        note.setText(getIntent().getStringExtra("content"));
+        note.setText(n.getContent());
+    }
+
+    @Override
+    public void onBackPressed() {
+        TextView title = findViewById(R.id.titleTextEdit);
+        TextView note = findViewById(R.id.noteTextEdit);
+
+        if (title.getText().toString().trim().length() == 0 &&
+            note.getText().toString().trim().length() == 0) {
+            Context context = getApplicationContext();
+            Note n = Note.getByID(noteID, context);
+            n.delete(context);
+        }
+
+        setResult(Activity.RESULT_CANCELED);
+        finish();
     }
 }

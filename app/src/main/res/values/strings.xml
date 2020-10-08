@@ -5,4 +5,5 @@
     <string name="saveButtonText">Save</string>
     <string name="titleHint">title</string>
     <string name="contentHint">content</string>
+    <string name="newNoteButtonText">New</string>
 </resources>

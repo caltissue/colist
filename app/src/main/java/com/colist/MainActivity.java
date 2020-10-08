@@ -8,22 +8,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
+import android.text.*;
+import android.text.style.*;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,61 +26,32 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         LinearLayout noteList = findViewById(R.id.notelist);
 
-        String[][] y = {
-                {"note title one", "here's the text content of note 1, titled 'note title one', for the household to read etc."},
-                {"my 2nd NOTE!!", "this is note 2, which I wrote AFTER note 1 for ya'll, hope you read it etc."},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"},
-                {"note example", "x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x"}
-        };
-/*
-        String allNotes = "";
-        Context context = getApplicationContext();
-        File f = new File(context.getFilesDir(), "notes");
-        try {
-            f.createNewFile();
-            FileReader reader = new FileReader(f);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-            StringBuilder sb = new StringBuilder();
-            String line = bufferedReader.readLine();
-            while (line != null){
-                sb.append(line).append("\n");
-                line = bufferedReader.readLine();
-            }
-            bufferedReader.close();
-            allNotes = sb.toString();
-        }
-        catch (Exception e) {
-            // TODO: handle IOException, SecurityException, FileNotFoundException
-        }
+        ArrayList<Note> notes = Note.getAll(getApplicationContext());
 
-        TextView test = new TextView(this);
-        test.setText(allNotes);
-        noteList.addView(test);
-*/
-        for (int i = 0; i < y.length; i++) {
+        for (Note n : notes)  {
             TextView newView = new TextView(this);
-            String title = y[i][0];
-            String content = y[i][1];
+            String title = n.getTitle();
+            String content = n.getContent();
+            content = content.split("\n")[0];
+            String id = ((Integer)n.getID()).toString();
 
-            final SpannableString full = new SpannableString(title + "\n" + content);
+            final SpannableString full = new SpannableString(title + "\n" + content + "\n" + id);
 
             full.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, title.length(), 0);
             full.setSpan(new RelativeSizeSpan(2f), 0, title.length(), 0);
             full.setSpan(new StyleSpan(Typeface.BOLD), 0, title.length(), 0);
 
-            //SpannableString content = new SpannableString();
-            full.setSpan(new ForegroundColorSpan(Color.LTGRAY), title.length(), full.length(), 0);
-            full.setSpan(new StyleSpan(Typeface.ITALIC), title.length(), full.length(), 0);
+            int len = title.length() + "\n".length() + content.length();
+            full.setSpan(new ForegroundColorSpan(Color.LTGRAY), title.length(), len, 0);
+            full.setSpan(new StyleSpan(Typeface.ITALIC), title.length(), len, 0);
+
+            full.setSpan(new ForegroundColorSpan(Color.DKGRAY), len + 1, full.length(), 0);
+            full.setSpan(new AbsoluteSizeSpan(5), len + 1, full.length(), 0);
 
             newView.setText(full);
             newView.setLayoutParams(
                     new ViewGroup.LayoutParams(
                             LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            newView.setId(123450 + i);
 
             newView.setLines(2);
             newView.setLineSpacing(10,1);
@@ -99,15 +62,31 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), ActivityNote.class);
-                    String[] titleAndContent = ((TextView) v).getText().toString().split("\n");
-                    intent.putExtra("title", titleAndContent[0]);
-                    intent.putExtra("content", titleAndContent[1]);
-                    startActivity(intent);
+                    Integer noteID = Integer.parseInt(((TextView) v).getText().toString().split("\n")[2]);
+                    intent.putExtra("id", noteID);
+                    startActivityForResult(intent, 1);
                 }
             });
 
             noteList.addView(newView);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        finish();
+        startActivity(getIntent());
+    }
+
+    public void onNewClick(View v) {
+        Context context = getApplicationContext();
+        Note n = new Note("","", context);
+        n.save(context);
+
+        Intent intent = new Intent(getApplicationContext(), ActivityNoteEdit.class);
+        intent.putExtra("noteID", n.getID());
+        startActivityForResult(intent, 2);
     }
 
 }
