@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.colist.Entry.Entry;
+import com.colist.Entry.Note;
 
 public class ActivityNote extends AppCompatActivity {
 
-    private int noteID;
+    private int id;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -20,26 +24,23 @@ public class ActivityNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
-        noteID = getIntent().getIntExtra("id",0);
+        id = getIntent().getIntExtra("id",0);
         Context context = getApplicationContext();
-        Note n = Note.getByID(noteID, context);
+        View v = EntryManager.getEntry(id).getUI().getView(context);
 
-        TextView title = findViewById(R.id.titleTextView);
-        title.setText(n.getTitle());
-
-        TextView note = findViewById(R.id.noteTextView);
-        note.setText(n.getContent());
+        LinearLayout cont = findViewById(R.id.viewScreenContainer);
+        cont.addView(v, 1);
     }
 
     public void onEdit(View v) {
         Intent intent = new Intent(getApplicationContext(), ActivityNoteEdit.class);
-        intent.putExtra("noteID", noteID);
+        intent.putExtra("id", id);
         startActivityForResult(intent, 2);
     }
 
     public void onChangeClicked(View v) {
         Intent intent = new Intent(getApplicationContext(), ActivityChangelog.class);
-        intent.putExtra("noteID", noteID);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 

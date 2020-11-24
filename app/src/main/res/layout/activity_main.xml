@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/mainActivityLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -16,35 +17,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ScrollView
-            android:id="@+id/scrollView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="95">
-
-            <LinearLayout
-                android:id="@+id/notelist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@android:drawable/divider_horizontal_textfield"
-                android:dividerPadding="5dp"
-                android:orientation="vertical"
-                android:paddingBottom="30dp"></LinearLayout>
-        </ScrollView>
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_weight="5"
-            android:onClick="onNewClick"
-            android:text="@string/newNoteButtonText"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView3" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:onClick="onNewClick"
+        android:text="@string/newNoteButtonText"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
